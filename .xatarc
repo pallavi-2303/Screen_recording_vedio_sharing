@@ -1,0 +1,6 @@
+{
+  "databaseURL": "https://Pallavi-Singh-s-workspace-nca3h7.eu-central-1.xata.sh/db/jsm_snapcast",
+  "codegen": {
+    "output": "src/xata.ts"
+  }
+}
