@@ -1,25 +1,41 @@
-import VideoDetailHeader from '@/components/VideoDetailHeader';
-import VideoPlayer from '@/components/VideoPlayer';
-import { getVideoById } from '@/lib/hooks/actions/video';
-import { redirect } from 'next/navigation';
-import React from 'react'
+import VideoDetailHeader from "@/components/VideoDetailHeader";
+import VideoInfo from "@/components/VideoInfo";
+import VideoPlayer from "@/components/VideoPlayer";
+import { getTranscript, getVideoById } from "@/lib/hooks/actions/video";
+import { redirect } from "next/navigation";
+import React from "react";
 
-const page = async({params}:Params) => {
-  console.log("params:", params); 
-  const { videoId } = await params; 
+const page = async ({ params }: Params) => {
+  console.log("params:", params);
+  const { videoId } = await params;
   console.log("videoId:", videoId);
-  const {user,video}=await getVideoById(videoId);
-   console.log(video);
-  if(!video) redirect('/')
+  const { user, video } = await getVideoById(videoId);
+  const transcript = await getTranscript(videoId);
+  console.log(transcript);
+  console.log(video);
+  if (!video) redirect("/");
   return (
-   <main className='wrapper page'>
-     <VideoDetailHeader {...video} userImg={user?.image} username={user?.name} ownerId={video.userId} />
-    <section className='video-details'>
-<div className='content'> <VideoPlayer videoId={video?.videoId}/></div>
-    </section> 
-    
-   </main>
-  )
-}
+    <main className="wrapper page">
+      <VideoDetailHeader
+        {...video}
+        userImg={user?.image}
+        username={user?.name}
+        ownerId={video.userId}
+      />
+      <section className="video-details">
+        <div className="content">
+          {" "}
+          <VideoPlayer videoId={video?.videoId} />
+        </div>
+        <VideoInfo transcript={transcript}
+        title={video.title}
+         createdAt={video.createdAt}
+          description={video.description}
+          videoId={videoId}
+          videoUrl={video.videoUrl}/>
+      </section>
+    </main>
+  );
+};
 
-export default page
+export default page;

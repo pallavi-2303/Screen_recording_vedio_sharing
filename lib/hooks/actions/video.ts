@@ -158,8 +158,8 @@ export const getAllVideos = withErrorHandling(
 export const getVideoById=withErrorHandling(async(videoId:string)=>{
    
   
- const [videoRecord]=await buildVideoWithUserQuery().where(eq(videos.id,videoId)) 
-  
+ const [videoRecord]=await buildVideoWithUserQuery().where(eq(videos.videoId,videoId)) 
+  console.log(videoRecord);
   return videoRecord;
 })
 export const getAllVideosByUser = withErrorHandling(
@@ -239,3 +239,18 @@ export const updateVideoVisibility=withErrorHandling(
    return {};
   }
 )
+export const getTranscript = withErrorHandling(async (videoId: string) => {
+  const response = await fetch(
+    `${BUNNY.TRANSCRIPT_URL}/${videoId}/captions/en-auto.vtt`
+  );
+  
+  return response.text();
+});
+export const incrementVideoViews=withErrorHandling(async(videoId:string)=>{
+  await db.update(videos)
+   .set({ views: sql`${videos.views} + 1`, updatedAt: new Date() })
+      .where(eq(videos.videoId, videoId));
+
+    revalidatePaths([`/video/${videoId}`]);
+    return {};
+})
