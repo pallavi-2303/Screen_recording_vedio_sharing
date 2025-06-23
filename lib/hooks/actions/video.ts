@@ -16,7 +16,6 @@ import { revalidatePath } from "next/cache";
 import aj from "@/lib/arcjet";
 import { fixedWindow, request } from "@arcjet/next";
 import { and, desc, eq, ilike, or, sql } from "drizzle-orm";
-import { PgSelectBase, PgSelectBuilder } from "drizzle-orm/pg-core";
 const VIDEO_STREAM_BASE_URL = BUNNY.STREAM_BASE_URL;
 const THUMBNAIL_STORAGE_BASE_URL = BUNNY.STORAGE_BASE_URL;
 const THUMBNAIL_CDN_URL = BUNNY.CDN_URL;
