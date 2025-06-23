@@ -23,7 +23,7 @@ const page = async ({ searchParams }: SearchParams) => {
             <VideoCard
               key={video.id}
               id={video.videoId}
-             title={video.title}
+              title={video.title}
               thumbnail={video.thumbnailUrl}
               createdAt={video.createdAt}
               userImg={user?.image ?? ""}
@@ -41,10 +41,10 @@ const page = async ({ searchParams }: SearchParams) => {
           description="Try adjucting your search"
         />
       )}
-      {pagination?.totalPages>1 && (
+      {pagination?.totalPages > 1 && (
         <Pagination
-        currentPage={pagination.currentPage}
-        totalPages={pagination.totalPages}
+          currentPage={pagination.currentPage}
+          totalPages={pagination.totalPages}
           queryString={query}
           filterString={filter}
         />

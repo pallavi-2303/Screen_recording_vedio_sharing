@@ -9,7 +9,7 @@ import ImagewithFallBack from "./ImagewithFallBack";
 const NavBar = () => {
   const {data:session}=authClient.useSession();
   const user = session?.user;
-  console.log(user);
+ 
   const router=useRouter();
 
   return (

@@ -1,7 +1,13 @@
 "use server";
 
 import { auth } from "@/lib/auth";
-import { apiFetch, doesTitleMatch, getEnv, withErrorHandling,getOrderByClause} from "../util";
+import {
+  apiFetch,
+  doesTitleMatch,
+  getEnv,
+  withErrorHandling,
+  getOrderByClause,
+} from "../util";
 import { headers } from "next/headers";
 import { BUNNY } from "@/constants";
 import { db } from "@/drizzle/db";
@@ -43,13 +49,15 @@ const validateWithArcjet = async (fingerprint: string) => {
     throw new Error("Rate Limit Exceeded");
   }
 };
-const buildVideoWithUserQuery=()=>{
-  console.log(videos)
-    return db.select({
-        video:videos,
-        user:{id:user.id,name:user.name,image:user.image},
-    }).from(videos).leftJoin(user,eq(videos.userId,user.id))
-}
+const buildVideoWithUserQuery = () => {
+  return db
+    .select({
+      video: videos,
+      user: { id: user.id, name: user.name, image: user.image },
+    })
+    .from(videos)
+    .leftJoin(user, eq(videos.userId, user.id));
+};
 //Server Actions
 export const getVideoUploadUrl = withErrorHandling(async () => {
   await getSessionUserId();
@@ -143,7 +151,7 @@ export const getAllVideos = withErrorHandling(
       )
       .limit(pageSize)
       .offset((pageNumber - 1) * pageSize);
-      
+
     return {
       videos: videoRecords,
       pagination: {
@@ -155,13 +163,13 @@ export const getAllVideos = withErrorHandling(
     };
   }
 );
-export const getVideoById=withErrorHandling(async(videoId:string)=>{
-   
-  
- const [videoRecord]=await buildVideoWithUserQuery().where(eq(videos.videoId,videoId)) 
-  console.log(videoRecord);
+export const getVideoById = withErrorHandling(async (videoId: string) => {
+  const [videoRecord] = await buildVideoWithUserQuery().where(
+    eq(videos.videoId, videoId)
+  );
+
   return videoRecord;
-})
+});
 export const getAllVideosByUser = withErrorHandling(
   async (
     userIdParameter: string,
@@ -213,44 +221,48 @@ export const getVideoProcessingStatus = withErrorHandling(
     };
   }
 );
-export const deleteVideo=withErrorHandling(async(videoId:string,thumbnailUrl:string)=>{
-   console.log("💥 Trying to delete video from Bunny:", videoId);
+export const deleteVideo = withErrorHandling(
+  async (videoId: string, thumbnailUrl: string) => {
+    await apiFetch(
+      `${VIDEO_STREAM_BASE_URL}/${BUNNY_LIBRARY_ID}/videos/${videoId}`,
+      { method: "DELETE", bunnyType: "stream" }
+    );
+    const thumbnailPath = thumbnailUrl.split("thumbnails/")[1];
+    await apiFetch(
+      `${THUMBNAIL_STORAGE_BASE_URL}/thumbnails/${thumbnailPath}`,
+      { method: "DELETE", bunnyType: "storage", expectJson: false }
+    );
+    const result = await db.delete(videos).where(eq(videos.videoId, videoId));
 
-  await apiFetch(
-    `${VIDEO_STREAM_BASE_URL}/${BUNNY_LIBRARY_ID}/videos/${videoId}`,
-    {method:"DELETE",bunnyType:"stream"}
-  );
-  const thumbnailPath=thumbnailUrl.split("thumbnails/")[1];
-  await apiFetch(
-    `${THUMBNAIL_STORAGE_BASE_URL}/thumbnails/${thumbnailPath}`,
-    {method:"DELETE", bunnyType:"storage",expectJson:false}
-  );
-   const result = await db.delete(videos).where(eq(videos.videoId,videoId));
-   console.log("Coming from fronted",videoId);
-   console.log("Backend vedo id",videos.videoId);
- console.log("🗑️ DB DELETE RESULT:", result);
-   revalidatePaths(["/", `/video/${videoId}`]);
+    revalidatePaths(["/", `/video/${videoId}`]);
     return {};
-});
-export const updateVideoVisibility=withErrorHandling(
-  async(videoId: string, visibility: Visibility)=>{
-   await validateWithArcjet(videoId);
-   await db.update(videos).set({visibility,updatedAt:new Date()}).where(eq(videos.id,videoId));
-   return {};
   }
-)
+);
+export const updateVideoVisibility = withErrorHandling(
+  async (videoId: string, visibility: Visibility) => {
+    await validateWithArcjet(videoId);
+    await db
+      .update(videos)
+      .set({ visibility, updatedAt: new Date() })
+      .where(eq(videos.id, videoId));
+    return {};
+  }
+);
 export const getTranscript = withErrorHandling(async (videoId: string) => {
   const response = await fetch(
     `${BUNNY.TRANSCRIPT_URL}/${videoId}/captions/en-auto.vtt`
   );
-  
+
   return response.text();
 });
-export const incrementVideoViews=withErrorHandling(async(videoId:string)=>{
-  await db.update(videos)
-   .set({ views: sql`${videos.views} + 1`, updatedAt: new Date() })
+export const incrementVideoViews = withErrorHandling(
+  async (videoId: string) => {
+    await db
+      .update(videos)
+      .set({ views: sql`${videos.views} + 1`, updatedAt: new Date() })
       .where(eq(videos.videoId, videoId));
 
     revalidatePaths([`/video/${videoId}`]);
     return {};
-})
+  }
+);

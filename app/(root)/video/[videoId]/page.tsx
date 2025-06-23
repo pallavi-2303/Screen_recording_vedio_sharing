@@ -6,13 +6,12 @@ import { redirect } from "next/navigation";
 import React from "react";
 
 const page = async ({ params }: Params) => {
-  console.log("params:", params);
+
   const { videoId } = await params;
-  console.log("videoId:", videoId);
+ 
   const { user, video } = await getVideoById(videoId);
   const transcript = await getTranscript(videoId);
-  console.log(transcript);
-  console.log(video);
+ 
   if (!video) redirect("/");
   return (
     <main className="wrapper page">

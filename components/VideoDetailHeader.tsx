@@ -27,10 +27,7 @@ const VideoDetailHeader = ({
   const { data: session } = authClient.useSession();
   const userId = session?.user.id;
   const isOwner = userId === ownerId;
-  console.log("ownerId", ownerId);
-  console.log("userId", userId);
-  console.log("Header", videoId);
-  console.log(thumbnailUrl);
+ 
   const router = useRouter();
   const handleDelete = async () => {
     try {
