@@ -4,15 +4,14 @@ import Header from "@/components/Header";
 import Pagination from "@/components/Pagination";
 import VideoCard from "@/components/VideoCard";
 import { auth } from "@/lib/auth";
-import { authClient } from "@/lib/auth-client";
 import { getAllVideos } from "@/lib/hooks/actions/video";
+import { nextCookies } from "better-auth/next-js";
 import { redirect } from "next/navigation";
 import React from "react";
 
 const page = async ({ searchParams }: SearchParams) => {
-   const {data:session}=authClient.useSession();
-    const user = session?.user;
-   if(!user) redirect("/sign-in");
+ 
+
   const { query, filter, page } = await searchParams;
   const { videos, pagination } = await getAllVideos(
     query,

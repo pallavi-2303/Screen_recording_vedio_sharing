@@ -3,15 +3,13 @@ import { authClient } from "@/lib/auth-client";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect, useRouter } from "next/navigation";
-import React from "react";
+import React, { useEffect } from "react";
 import ImagewithFallBack from "./ImagewithFallBack";
 
 const NavBar = () => {
   const {data:session}=authClient.useSession();
   const user = session?.user;
- 
-  const router=useRouter();
-
+   const router=useRouter();
   return (
     <header className="navbar">
       <nav>
