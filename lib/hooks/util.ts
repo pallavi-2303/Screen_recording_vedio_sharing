@@ -308,3 +308,16 @@ export const doesTitleMatch = (videos: any, searchQuery: string) =>
     sql`REPLACE(REPLACE(REPLACE(LOWER(${videos.title}), '-', ''), '.', ''), ' ', '')`,
     `%${searchQuery.replace(/[-. ]/g, "").toLowerCase()}%`
   );
+  export const extractCloudinaryPublicId=(url:string):string | null=>{
+ try {
+    // Example Cloudinary URL: https://res.cloudinary.com/<cloud_name>/image/upload/v1234567890/folder/filename.jpg
+    const urlParts = url.split("/");
+    const fileWithExtension = urlParts[urlParts.length - 1]; 
+    const fileName = fileWithExtension.split(".")[0];
+    const folder = urlParts[urlParts.length - 2]; 
+    return `${folder}/${fileName}`; 
+  } catch (error) {
+    console.error("Failed to extract public_id:", error);
+    return null;
+  }
+  }

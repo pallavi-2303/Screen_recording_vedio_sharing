@@ -120,6 +120,7 @@ declare interface VideoDetails {
   thumbnailUrl: string;
   visibility: Visibility;
   duration?: number | null;
+  videoUrl: string;
 }
 
 declare interface BunnyVideoResponse {
