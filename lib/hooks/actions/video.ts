@@ -94,7 +94,6 @@ export const getVideoUploadUrl = withErrorHandling(async () => {
       timestamp,
       public_id: publicId,
       folder,
-      resource_type: "video",
     },
     process.env.CLOUDINARY_API_SECRET!
   );
@@ -107,7 +106,7 @@ export const getVideoUploadUrl = withErrorHandling(async () => {
     timestamp,
     apiKey: process.env.CLOUDINARY_API_KEY!,
     folder,
-    uploadPreset: "signed_video_upload"
+    
   };
 });
 
@@ -139,7 +138,6 @@ export const getThumbnailUploadUrl=withErrorHandling(
         timestamp,
         public_id: publicId,
         folder,
-        resource_type: "video",
       },
       process.env.CLOUDINARY_API_SECRET!
     );  
@@ -154,7 +152,7 @@ export const getThumbnailUploadUrl=withErrorHandling(
       apiKey: process.env.CLOUDINARY_API_KEY!,
       cloudName: process.env.CLOUDINARY_CLOUD_NAME!,
       folder,
-      uploadPreset: "signed_thumbnail_upload"
+      
     };
   }
 )

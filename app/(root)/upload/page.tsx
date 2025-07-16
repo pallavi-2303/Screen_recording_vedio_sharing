@@ -159,7 +159,13 @@ const page = () => {
       }
 
       const videoFormData = new FormData();
-      videoFormData.append("upload_preset", "signed_video_upload"); // or pass dynamic one from API response
+  console.log("file", video.file);
+console.log("public_id", videoId);
+     console.log("folder", videoFolder);
+     console.log("timestamp", videoTimestamp.toString());
+     console.log("signature", videoSignature);
+     console.log("api_key", videoApiKey);
+     console.log("resource_type","video");
 
       videoFormData.append("file", video.file);
       videoFormData.append("public_id", videoId);
@@ -167,13 +173,25 @@ const page = () => {
       videoFormData.append("timestamp", videoTimestamp.toString());
       videoFormData.append("signature", videoSignature);
       videoFormData.append("api_key", videoApiKey);
+       videoFormData.append("resource_type","video");
+      
       const videoRes = await fetch(videoUploadUrl, {
         method: "POST",
         body: videoFormData,
       });
-      if (!videoRes.ok) throw new Error("Video upload failed");
+     if (!videoRes.ok) {
+  let cloudinaryError = "Unknown error";
+  try {
+    const errorData = await videoRes.json();
+    cloudinaryError = errorData?.error?.message || cloudinaryError;
+  } catch (e) {
+    console.warn("Failed to parse error response from Cloudinary:", e);
+  }
+  throw new Error(`Cloudinary error: ${cloudinaryError}`);
+}
       const videoData = await videoRes.json();
       const videoUrl = videoData.secure_url;
+      console.log(videoUrl);
       const {
         uploadUrl: thumbnailUploadUrl,
         signature: thumbnailSignature,
@@ -182,12 +200,18 @@ const page = () => {
         cdnUrl: thumbnailCdnUrl,
         publicId: thumbnailPublicId,
         folder: thumbnailFolder,
-      } = await fetch(`/api/thumbnail?videoId=${videoId}`).then((res) =>
+      } = await fetch(`/api/thumbnailUploadUrl?videoId=${videoId}`).then((res) =>
         res.json()
       );
 
       const thumbnailFormData = new FormData();
-      thumbnailFormData.append("upload_preset", "signed_thumbnail_upload");
+     console.log("file", thumbnail.file!);
+    console.log("public_id", thumbnailPublicId);
+    console.log("folder", thumbnailFolder);
+     console.log("timestamp", thumbnailTimestamp.toString());
+     console.log ("signature", thumbnailSignature);
+      console.log("api_key", thumbnailApiKey);
+
       thumbnailFormData.append("file", thumbnail.file!);
       thumbnailFormData.append("public_id", thumbnailPublicId);
       thumbnailFormData.append("folder", thumbnailFolder);
@@ -198,7 +222,18 @@ const page = () => {
         method: "POST",
         body: thumbnailFormData,
       });
-      if (!thumbRes.ok) throw new Error("Thumbnail upload failed");
+      if (!thumbRes.ok) {
+    {
+  let cloudinaryError = "Unknown error";
+  try {
+    const errorData = await videoRes.json();
+    cloudinaryError = errorData?.error?.message || cloudinaryError;
+  } catch (e) {
+    console.warn("Failed to parse error response from Cloudinary:", e);
+  }
+  throw new Error(`Cloudinary error: ${cloudinaryError}`);
+}     
+      }
       await saveVideoDetails({
         videoId,
         videoUrl,
