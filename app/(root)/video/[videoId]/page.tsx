@@ -11,7 +11,8 @@ const page = async ({ params }: Params) => {
  
   const { user, video } = await getVideoById(videoId);
   const transcript = await getTranscript(videoId);
- 
+ console.log(video);
+ console.log("videoUrl",video?.videoUrl);
   if (!video) redirect("/");
   return (
     <main className="wrapper page">
@@ -24,7 +25,7 @@ const page = async ({ params }: Params) => {
       <section className="video-details">
         <div className="content">
           {" "}
-          <VideoPlayer videoId={video?.videoId} />
+          <VideoPlayer videoId={video?.videoId} videoUrl={video?.videoUrl} />
         </div>
         <VideoInfo transcript={transcript}
         title={video.title}

@@ -34,7 +34,7 @@ JSON.stringify({
   name:'screen-recording.webm',
   type:recordedBlob.type,
   size:recordedBlob.size,
-  duration:recordingDuration || 0
+  duration:recordingDuration  ?? 0
 })
 )
 router.push('/upload');

@@ -95,6 +95,7 @@ declare interface VideoDetailHeaderProps {
 declare interface VideoPlayerProps {
   videoId: string;
   className?: string;
+  videoUrl: string;
 }
 declare interface VideoInfoProps {
   transcript?: string;

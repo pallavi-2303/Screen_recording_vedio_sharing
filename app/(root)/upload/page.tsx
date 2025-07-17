@@ -3,30 +3,11 @@ import FormField from "@/components/FormField";
 import InputField from "@/components/InputField";
 import { MAX_THUMBNAIL_SIZE, MAX_VIDEO_SIZE } from "@/constants";
 import {
-  getThumbnailUploadUrl,
-  getVideoUploadUrl,
   saveVideoDetails,
 } from "@/lib/hooks/actions/video";
 import { useFileInput } from "@/lib/hooks/useFileInput";
 import { useRouter } from "next/navigation";
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
-const uploadFileToBunny = (
-  file: File,
-  uploadUrl: string,
-  accessKey: string
-): Promise<void> => {
-  return fetch(uploadUrl, {
-    method: "PUT",
-    headers: {
-      "Content-Type": file.type,
-      AccessKey: accessKey,
-    },
-    body: file,
-  }).then((response) => {
-    if (!response.ok) throw new Error("Upload Fail");
-  });
-};
-
 const page = () => {
   const router = useRouter();
   const video = useFileInput(MAX_VIDEO_SIZE);
@@ -35,8 +16,8 @@ const page = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [videoDuration, setVideoDuration] = useState(0);
   useEffect(() => {
-    if (video.duration !== null || 0) {
-      setVideoDuration(video.duration!);
+    if (video.duration) {
+      setVideoDuration(video.duration);
     }
   }, [video.duration]);
   useEffect(() => {
@@ -76,49 +57,6 @@ const page = () => {
     const { name, value } = e.target;
     setFormData((prevState) => ({ ...prevState, [name]: value }));
   };
-  // const handleSubmit = async (e: FormEvent) => {
-  //   e.preventDefault();
-  //   setIsSubmitting(true);
-  //   try {
-  //     if (!video.file || !thumbnail.file) {
-  //       setError("Please upload vedio and thumbnail");
-  //       return;
-  //     }
-  //     if (!formData.description || !formData.title) {
-  //       setError("Please fill in all the details");
-  //       return;
-  //     }
-  //     //upload vedio to bunny
-  //     const {
-  //       videoId,
-  //       uploadUrl: videoUploadUrl,
-  //       accessKey: videoAccessKey,
-  //     } = await getVideoUploadUrl();
-  //     if(!videoUploadUrl || !videoAccessKey) throw new Error("Failed to get video upload credentials")
-  //       await uploadFileToBunny(video.file,videoUploadUrl,videoAccessKey)
-
-  //     //UPLOAD THUMBNIAL
-  //      const {
-
-  //       uploadUrl: thumbnailUploadUrl,
-  //       accessKey: thumbnailAccessKey,
-  //       cdnUrl:thumbnailCdnUrl
-  //     } = await getThumbnailUploadUrl(videoId);
-  //       if(!thumbnailUploadUrl || !thumbnailAccessKey || !thumbnailCdnUrl) throw new Error("Failed to get thumbnail upload credentials")
-  //        await uploadFileToBunny(thumbnail.file,thumbnailUploadUrl,thumbnailAccessKey) ;
-  //       await saveVideoDetails({
-  //         videoId,
-  //         thumbnailUrl:thumbnailCdnUrl,
-  //         ...formData,
-  //         duration:videoDuration
-  //       })
-  //       router.push(`/`);
-  //   } catch (error) {
-  //     console.log("Error submitting form", error);
-  //   } finally {
-  //     setIsSubmitting(false);
-  //   }
-  // };
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -159,14 +97,6 @@ const page = () => {
       }
 
       const videoFormData = new FormData();
-  console.log("file", video.file);
-console.log("public_id", videoId);
-     console.log("folder", videoFolder);
-     console.log("timestamp", videoTimestamp.toString());
-     console.log("signature", videoSignature);
-     console.log("api_key", videoApiKey);
-     console.log("resource_type","video");
-
       videoFormData.append("file", video.file);
       videoFormData.append("public_id", videoId);
       videoFormData.append("folder", videoFolder);
@@ -205,13 +135,6 @@ console.log("public_id", videoId);
       );
 
       const thumbnailFormData = new FormData();
-     console.log("file", thumbnail.file!);
-    console.log("public_id", thumbnailPublicId);
-    console.log("folder", thumbnailFolder);
-     console.log("timestamp", thumbnailTimestamp.toString());
-     console.log ("signature", thumbnailSignature);
-      console.log("api_key", thumbnailApiKey);
-
       thumbnailFormData.append("file", thumbnail.file!);
       thumbnailFormData.append("public_id", thumbnailPublicId);
       thumbnailFormData.append("folder", thumbnailFolder);

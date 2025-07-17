@@ -21,6 +21,11 @@ ignoreBuildErrors:true,
         port: "",
         pathname: "/**",
       },
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+        pathname: '/**',
+      }, 
     ],
   },
   /* config options here */
