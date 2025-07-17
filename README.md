@@ -14,7 +14,7 @@ A full-stack screen recording and video sharing platform built with **Next.js**,
 - **Next.js** & **React** – Frontend & SSR
 - **Tailwind CSS** – Modern, responsive UI
 - **Better Auth** – Authentication (email + social)
-- **Bunny.net** – Video hosting & streaming
+- **Cloudinary** – Video hosting & streaming
 - **Arcjet** – Bot protection & rate limiting
 - **Xata** – Scalable PostgreSQL DB
 - **Drizzle ORM** – Type-safe DB queries
